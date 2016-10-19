@@ -1,0 +1,9 @@
+---
+- name: Allow SSH traffic
+  ufw: rule=allow port={{ ufw.ssh }} proto=tcp
+
+- name: Allow HTTP traffic
+  ufw: rule=allow port={{ ufw.http }} proto=tcp
+
+- name: Deny everything else
+  ufw: state=enabled policy=deny

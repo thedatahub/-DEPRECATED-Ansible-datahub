@@ -1,0 +1,21 @@
+---
+server:
+    timezone: UTC
+    locale: en_US.UTF-8
+    local_hostname: 'ubuntu-trusty'
+    local_fqdn_name: 'trusty.box'
+    mail_address: 'matthias@colada.be'
+
+nginx:
+    docroot: /vagrant/web
+    servername: trusty.box
+
+php:
+    ppa: php
+    packages: [php5-cli, php5-intl, php5-mcrypt]
+    pecl_packages: [mongo]
+
+ufw:
+    ssh: 22
+    http: 80
+

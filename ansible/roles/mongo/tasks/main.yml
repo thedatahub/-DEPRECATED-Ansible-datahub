@@ -1,0 +1,11 @@
+---
+- apt_key: keyserver=keyserver.ubuntu.com id=EA312927
+
+- name: Create the mongodb-org-3.2.list file
+  template: src=mongodb-org-3.2.list dest=/etc/apt/sources.list.d/mongodb-org-3.2.list
+
+- name: Update apt
+  apt: update_cache=yes
+
+- name: Install mongodb-org
+  apt: pkg=mongodb-org state=latest

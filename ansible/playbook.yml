@@ -1,0 +1,14 @@
+---
+- hosts: all
+  gather_facts: false
+  remote_user: root
+  vars_files:
+    - vars/vault.yml
+    - vars/all.yml
+  roles:
+    - server
+    - nginx
+    - mongo
+    - php
+    - geerlingguy.composer
+    - catmandu

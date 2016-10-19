@@ -1,0 +1,88 @@
+---
+
+# Apt
+
+- name: Update apt
+  apt: update_cache=yes
+
+- name: Install System Packages
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - curl
+    - wget
+    - python-software-properties
+    - ufw
+    - fail2ban
+    - unattended-upgrades
+    - logwatch
+    - vim
+    - mosh
+    - git
+    - yui-compressor
+    - npm
+
+- name: Adjust APT update intervals
+  template: src=apt_periodic dest=/etc/apt/apt.conf.d/10periodic
+
+- name: Upgrade APT to the latest packages
+  apt: upgrade=safe
+
+# Basic Host configuration
+
+- name: Configure the timezone
+  template: src=timezone.tpl dest=/etc/timezone
+
+- name: More Configure the timezone
+  file: src=/usr/share/zoneinfo/{{server.timezone}} dest=/etc/localtime state=link force=yes backup=yes
+
+- name: Set default system language pack
+  shell: locale-gen {{server.locale}}
+
+- name: Set up a unique hostname
+  hostname: name={{ server.local_hostname }}
+
+- name: Add the server's domain to the hosts file
+  lineinfile: dest=/etc/hosts
+              regexp='.*{{ item }}$'
+              line="{{ hostvars[item].ansible_default_ipv4.address }} {{ server.local_fqdn_name }} {{ server.local_hostname }}"
+              state=present
+  when: hostvars[item].ansible_default_ipv4.address is defined
+  with_items: "{{ groups['local'] }}"
+
+- name: Set up Postfix to relay mail
+  debconf: name=postfix
+           question='{{ item.question }}'
+           value='{{ item.value }}'
+           vtype='{{ item.vtype }}'
+  with_items:
+    - { question: 'postfix/mailname', value: '{{ ansible_fqdn }}', vtype: 'string' }
+    - { question: 'postfix/main_mailer_type', value: 'Internet Site', vtype: 'string' }
+
+- name: Email log summary daily
+  lineinfile: dest=/etc/cron.daily/00logwatch
+              regexp="^/usr/sbin/logwatch"
+              line="/usr/sbin/logwatch --output mail --mailto {{ server.mail_address }} --detail high"
+              state=present create=yes
+
+# Create a non-root user
+# We'll use data from vault.yml
+
+- name: Add secondary non-root group
+  group: name={{ user.group }}
+
+- name: Add secondary non-root user
+  user: name={{ user.name }}
+        password={{ user.password }}
+        group={{ user.group }}
+        shell=/bin/bash
+
+- name: Add remote authorization key for secondary non-root user
+  authorized_key: user={{ user.name }}
+                  key="{{ lookup('file', item) }}"
+  with_items: '{{ user.authorized_keys }}'
+
+- name: Add normal user to sudoers
+  lineinfile: dest=/etc/sudoers
+              regexp="{{ user.name }} ALL"
+              line="{{ user.name }} ALL=(ALL) ALL"
+              state=present
