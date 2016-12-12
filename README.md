@@ -62,4 +62,4 @@ Open up your browser and navigate to either the IP address or the local domain.
 This package is free software; you can redistribute it and/or modify it under
 the terms of the GPLv3.
 
-Please see [License File](LICENSE.md) for more information.
+Please see [License File](LICENSE) for more information.
