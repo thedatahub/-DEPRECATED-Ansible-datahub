@@ -2,8 +2,6 @@
 
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 
-## Ansible provisioning for the Datahub
-
 This project provides [Ansible](http://www.ansible.com) playbook for easy/quick
 installation and configuration of a Datahub instance.
 
