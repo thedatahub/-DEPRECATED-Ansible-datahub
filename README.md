@@ -57,7 +57,6 @@ Open up your browser and navigate to either the IP address or the local domain.
 
 ## License
 
-This package is free software; you can redistribute it and/or modify it under
-the terms of the GPLv3.
+Ansible-datahub is copyright (c) 2016 by Vlaamse Kunstcollectie vzw and PACKED vzw.
 
-Please see [License File](LICENSE) for more information.
+This is free software; you can redistribute it and/or modify it under the terms of the The GPLv3 License (GPL). Please see [License File](LICENSE) for more information.
